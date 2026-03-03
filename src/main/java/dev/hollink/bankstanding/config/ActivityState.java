@@ -12,5 +12,5 @@ public enum ActivityState
 	LOAFING(0.3),
 	GRINDING(0);
 
-	final double expMultiplier;
+	public final double expMultiplier;
 }

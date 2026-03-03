@@ -14,9 +14,9 @@ public enum BankDistance
 	FAR(0.1, 12, 15),
 	NOWHERE_NEAR(0, 16, Integer.MAX_VALUE);
 
-	final double expMultiplier;
-	final int minDistance;
-	final int maxDistance;
+	public final double expMultiplier;
+	private final int minDistance;
+	private final int maxDistance;
 
 	public static BankDistance fromDistance(int distance)
 	{

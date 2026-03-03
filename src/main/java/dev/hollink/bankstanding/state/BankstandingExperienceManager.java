@@ -109,8 +109,8 @@ public class BankstandingExperienceManager
 
 	private void grantExperience(ActivityState state)
 	{
-		double stateMultiplier = state.getExpMultiplier();
-		double bankMultiplier = getBankDistance().getExpMultiplier();
+		double stateMultiplier = state.expMultiplier;
+		double bankMultiplier = getBankDistance().expMultiplier;
 		double xpToGive = BASE_EXPERIENCE * bankMultiplier * stateMultiplier;
 
 		log.debug("Granting experience to {}", xpToGive);
