@@ -3,6 +3,7 @@ package dev.hollink.bankstanding;
 import com.google.inject.Provides;
 import dev.hollink.bankstanding.overlay.BankstandingOverlayManager;
 import dev.hollink.bankstanding.state.BankstandingExperienceManager;
+import dev.hollink.bankstanding.state.ChatCommandHandler;
 import dev.hollink.bankstanding.state.PlayerStateManager;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import net.runelite.api.GameState;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.client.chat.ChatCommandManager;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -36,11 +38,19 @@ public class BankstandingPlugin extends Plugin
 	@Inject
 	private BankstandingOverlayManager overlayManager;
 
+	@Inject
+	private ChatCommandManager chatCommandManager;
+
+	@Inject
+	private ChatCommandHandler chatCommandHandler;
+
 	@Override
 	protected void startUp()
 	{
 		experienceManager.init();
 		overlayManager.init();
+
+		chatCommandManager.registerCommand("!lvl", chatCommandHandler::handleLevelCommand);
 	}
 
 	@Override
@@ -48,6 +58,8 @@ public class BankstandingPlugin extends Plugin
 	{
 		overlayManager.destroy();
 		experienceManager.destroy();
+
+		chatCommandManager.unregisterCommand("!lvl");
 	}
 
 	@Subscribe
@@ -58,7 +70,6 @@ public class BankstandingPlugin extends Plugin
 			log.debug("Player logged in, start bankstanding experience tracking");
 			playerStateManager.startUp();
 			experienceManager.startUp();
-//			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Example says " + config.greeting(), null);
 		}
 	}
 

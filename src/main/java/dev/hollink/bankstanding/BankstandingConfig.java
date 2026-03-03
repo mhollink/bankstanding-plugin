@@ -23,7 +23,6 @@ public interface BankstandingConfig extends Config
 		return false;
 	}
 
-
 	@ConfigItem(
 		keyName = "debugPanel",
 		name = "Display debug panel",

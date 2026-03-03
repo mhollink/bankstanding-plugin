@@ -19,6 +19,7 @@ import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
 import net.runelite.api.coords.WorldPoint;
@@ -120,6 +121,11 @@ public class BankstandingExperienceManager
 			String.valueOf(bankstanding.getExperience())
 		);
 
+		if (hasLeveledUp)
+		{
+			sendLevelUpMessage();
+		}
+
 		events.publish(
 			BankstandingEvent.experienceGained()
 				.skill(bankstanding)
@@ -127,6 +133,15 @@ public class BankstandingExperienceManager
 				.leveledUp(hasLeveledUp)
 				.build()
 		);
+	}
+
+	private void sendLevelUpMessage()
+	{
+		client.addChatMessage(
+			ChatMessageType.GAMEMESSAGE,
+			"",
+			"You have leveled up your Bankstanding to level " + bankstanding.getCurrentLevel(),
+			null);
 	}
 
 	private BankDistance getBankDistance()
