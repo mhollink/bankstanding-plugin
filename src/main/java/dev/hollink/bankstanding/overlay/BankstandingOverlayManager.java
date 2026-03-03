@@ -16,6 +16,7 @@ public class BankstandingOverlayManager
 	private final BankstandingLevelProgressOverlay progressOverlay;
 	private final BankstandingDebugOverlay debugInfoOverlay;
 	private final BankLocationDebugOverlay debugBankOverlay;
+	private final ConfettiOverlay confettiOverlay;
 
 	public void init()
 	{
@@ -24,10 +25,12 @@ public class BankstandingOverlayManager
 		overlayManager.add(progressOverlay);
 		overlayManager.add(debugInfoOverlay);
 		overlayManager.add(debugBankOverlay);
+		overlayManager.add(confettiOverlay);
 	}
 
 	public void destroy()
 	{
+		overlayManager.remove(confettiOverlay);
 		overlayManager.remove(progressOverlay);
 		overlayManager.remove(debugInfoOverlay);
 		overlayManager.remove(debugBankOverlay);

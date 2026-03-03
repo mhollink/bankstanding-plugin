@@ -121,11 +121,6 @@ public class BankstandingExperienceManager
 			String.valueOf(bankstanding.getExperience())
 		);
 
-		if (hasLeveledUp)
-		{
-			sendLevelUpMessage();
-		}
-
 		events.publish(
 			BankstandingEvent.experienceGained()
 				.skill(bankstanding)
@@ -133,15 +128,6 @@ public class BankstandingExperienceManager
 				.leveledUp(hasLeveledUp)
 				.build()
 		);
-	}
-
-	private void sendLevelUpMessage()
-	{
-		client.addChatMessage(
-			ChatMessageType.GAMEMESSAGE,
-			"",
-			"You have leveled up your Bankstanding to level " + bankstanding.getCurrentLevel(),
-			null);
 	}
 
 	private BankDistance getBankDistance()

@@ -5,6 +5,7 @@ import dev.hollink.bankstanding.overlay.BankstandingLevelProgressOverlay;
 import dev.hollink.bankstanding.overlay.BankstandingOverlayManager;
 import dev.hollink.bankstanding.state.BankstandingExperienceManager;
 import dev.hollink.bankstanding.state.ChatCommandHandler;
+import dev.hollink.bankstanding.state.LevelUpHandler;
 import dev.hollink.bankstanding.state.PlayerStateManager;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -48,11 +49,15 @@ public class BankstandingPlugin extends Plugin
 	@Inject
 	private ChatCommandHandler chatCommandHandler;
 
+	@Inject
+	private LevelUpHandler levelUpHandler;
+
 	@Override
 	protected void startUp()
 	{
 		experienceManager.init();
 		overlayManager.init();
+		levelUpHandler.init();
 
 		chatCommandManager.registerCommand("!lvl", chatCommandHandler::handleLevelCommand);
 	}
@@ -62,6 +67,7 @@ public class BankstandingPlugin extends Plugin
 	{
 		overlayManager.destroy();
 		experienceManager.destroy();
+		levelUpHandler.destroy();
 
 		chatCommandManager.unregisterCommand("!lvl");
 	}

@@ -4,7 +4,7 @@ import java.time.Duration;
 
 public interface TimeConstants
 {
-	Duration GRACE_PERIOD_GRINDING = Duration.ofMinutes(3);
+	Duration GRACE_PERIOD_GRINDING = Duration.ofMinutes(1);
 	Duration GRACE_PERIOD_MOVEMENT = Duration.ofMinutes(1);
 	Duration GRACE_PERIOD_CHATTING = Duration.ofMinutes(1);
 
