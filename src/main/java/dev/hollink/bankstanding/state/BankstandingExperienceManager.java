@@ -33,8 +33,13 @@ public class BankstandingExperienceManager
 	private final ConfigManager configManager;
 	private final BankstandingEventBus events;
 
+	@Getter
 	private Instant lastExpDrop = Instant.now();
+
+	@Getter
 	private Instant lastStateChange = Instant.now();
+
+	@Getter
 	private ActivityState lastState = ActivityState.GRINDING;
 
 	@Getter

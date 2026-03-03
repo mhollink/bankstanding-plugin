@@ -22,6 +22,6 @@ public class BankDistanceFinder
 		if (bank == null) {
 			return BankDistance.NOWHERE_NEAR;
 		}
-		return BankDistance.fromDistance(bank.centerPoint.distanceTo(from));
+		return BankDistance.fromDistance(bank.centerPoint.distanceTo(from) - bank.size);
 	}
 }

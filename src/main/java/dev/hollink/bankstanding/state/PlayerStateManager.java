@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
@@ -30,10 +31,16 @@ public class PlayerStateManager
 	private final Client client;
 	private final BankstandingEventBus events;
 
+	@Getter
 	private PlayerState currentPlayerState;
 
+	@Getter
 	private Activity<WorldPoint> lastMovement;
+
+	@Getter
 	private Activity<Long> lastExperienceDrop;
+
+	@Getter
 	private Activity<Void> lastChatMessage;
 
 	public void startUp()

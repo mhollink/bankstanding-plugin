@@ -6,10 +6,8 @@ import dev.hollink.bankstanding.events.BankstandingEvent;
 import dev.hollink.bankstanding.events.BankstandingEventBus;
 import dev.hollink.bankstanding.events.BankstandingExperienceGainedEvent;
 import dev.hollink.bankstanding.state.BankstandingExperienceManager;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.time.Duration;
 import java.time.Instant;
 import javax.inject.Inject;
@@ -18,13 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Experience;
 import net.runelite.client.ui.overlay.OverlayPanel;
-import net.runelite.client.ui.overlay.components.LineComponent;
-import net.runelite.client.ui.overlay.components.ProgressBarComponent;
 
 @Slf4j
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-public class BankstandingLevelProgressOverlay extends OverlayPanel
+public class BankstandingLevelProgressOverlay extends OverlayPanel implements OverlayHelper
 {
 	private final BankstandingEventBus events;
 	private final BankstandingExperienceManager experienceManager;
@@ -86,34 +82,17 @@ public class BankstandingLevelProgressOverlay extends OverlayPanel
 		{
 			return super.render(graphics);
 		}
-		panelComponent.setBorder(new Rectangle(6, 4, 6, 4));
-		panelComponent.getChildren().add(
-			LineComponent.builder()
-				.left("Bankstanding").leftColor(Color.WHITE)
-				.right(String.valueOf(currentLvl)).rightColor(Color.WHITE)
-				.build());
-		panelComponent.getChildren().add(
-			LineComponent.builder()
-				.left("Current xp:").leftColor(Color.YELLOW)
-				.right(String.valueOf(currentXp)).rightColor(Color.WHITE)
-				.build());
-		panelComponent.getChildren().add(
-			LineComponent.builder()
-				.left("Xp to level:").leftColor(Color.YELLOW)
-				.right(String.valueOf(xpToLevel)).rightColor(Color.WHITE)
-				.build());
-		panelComponent.getChildren().add(LineComponent.builder().build());
-		panelComponent.getChildren().add(buildProgressBarComponent(progress));
+
+		setPanelWidth(160, panelComponent);
+		addPanelPadding(panelComponent);
+		addText("Bankstanding", String.valueOf(currentLvl), panelComponent);
+		addLabelledText("Current xp:", String.valueOf(currentXp), panelComponent);
+		addLabelledText("Xp to level:", String.valueOf(xpToLevel), panelComponent);
+		addLineBreak(panelComponent);
+		addProgressBar(progress, panelComponent);
+
 		return super.render(graphics);
 	}
 
-	private ProgressBarComponent buildProgressBarComponent(float percentage)
-	{
-		ProgressBarComponent progressBar = new ProgressBarComponent();
-		progressBar.setMinimum(0);
-		progressBar.setMaximum(1);
-		progressBar.setValue(progress);
-		progressBar.setForegroundColor(Color.GREEN);
-		return progressBar;
-	}
+
 }

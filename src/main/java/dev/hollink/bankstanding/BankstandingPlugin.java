@@ -1,13 +1,11 @@
 package dev.hollink.bankstanding;
 
 import com.google.inject.Provides;
-import dev.hollink.bankstanding.overlay.BankstandingDebugOverlay;
-import dev.hollink.bankstanding.overlay.BankstandingLevelProgressOverlay;
+import dev.hollink.bankstanding.overlay.BankstandingOverlayManager;
 import dev.hollink.bankstanding.state.BankstandingExperienceManager;
 import dev.hollink.bankstanding.state.PlayerStateManager;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.events.ChatMessage;
@@ -17,7 +15,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.ui.overlay.OverlayManager;
 
 @Slf4j
 @PluginDescriptor(
@@ -37,34 +34,20 @@ public class BankstandingPlugin extends Plugin
 	private BankstandingExperienceManager experienceManager;
 
 	@Inject
-	private BankstandingLevelProgressOverlay progressOverlay;
-
-	@Inject
-	private BankstandingDebugOverlay debugOverlay;
-
-	@Inject
-	private OverlayManager overlayManager;
+	private BankstandingOverlayManager overlayManager;
 
 	@Override
 	protected void startUp()
 	{
-		overlayManager.add(progressOverlay);
-		overlayManager.add(debugOverlay);
-
-		debugOverlay.init();
 		experienceManager.init();
-		progressOverlay.init();
+		overlayManager.init();
 	}
 
 	@Override
 	protected void shutDown()
 	{
-		debugOverlay.destroy();
-		progressOverlay.destroy();
+		overlayManager.destroy();
 		experienceManager.destroy();
-
-		overlayManager.remove(debugOverlay);
-		overlayManager.remove(progressOverlay);
 	}
 
 	@Subscribe
