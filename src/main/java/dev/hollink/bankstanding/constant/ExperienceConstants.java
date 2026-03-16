@@ -10,7 +10,7 @@ public interface ExperienceConstants
 	 * <p>
 	 * With ~15K exp/h it will take
 	 * - 36 days of doing nothing to get 99.
-	 * - 555 dasy of doing nothing to get 200 M
+	 * - 555 days of doing nothing to get 200 M
 	 */
 	 int BASE_EXPERIENCE = 50;
 }

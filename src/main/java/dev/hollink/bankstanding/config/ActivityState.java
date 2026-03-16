@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum ActivityState
 {
 	AFK(1.2),
-	CHATTING(0.9),
-	LOAFING(0.25),
+	CHATTING(1.1),
+	LOAFING(0.3),
 	GRINDING(0);
 
 	public final double expMultiplier;
