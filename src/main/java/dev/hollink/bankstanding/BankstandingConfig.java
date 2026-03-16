@@ -49,14 +49,14 @@ public interface BankstandingConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "overlayAlwaysOn",
-		name = "Keep overlay always visible",
-		description = "Always show the bank standing experience panel, regardless of exp or distance.",
+		keyName = "bankstandingExpOverlay",
+		name = "Show bankstanding experience overlay",
+		description = "Show the bankstanding experience panel whenever you gain experience",
 		section = skill
 	)
-	default boolean panelAlwaysOn()
+	default boolean showBankstandingExperienceOverlay()
 	{
-		return false;
+		return true;
 	}
 
 	@ConfigSection(

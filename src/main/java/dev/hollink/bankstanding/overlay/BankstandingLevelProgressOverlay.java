@@ -42,7 +42,8 @@ public class BankstandingLevelProgressOverlay extends OverlayPanel implements Ov
 		events.unregister(this::onEvent);
 	}
 
-	public void startUp() {
+	public void startUp()
+	{
 		BankstandingLevel bankstanding = experienceManager.getBankstanding();
 		updateInternalState(bankstanding.getCurrentLevel(), bankstanding.getExperience());
 		lastExpDrop = Instant.EPOCH;
@@ -81,26 +82,42 @@ public class BankstandingLevelProgressOverlay extends OverlayPanel implements Ov
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (config.panelAlwaysOn()) {
-			addExperienceOverlay();
-			return super.render(graphics);
-		}
-
-		// Don't render if player is too far away from a bank region.
-		if (experienceManager.getBankDistance().ordinal() >= config.panelHideDistance().ordinal()) {
-			return super.render(graphics);
-		}
-
-		// Don't render if the player did not gain any experience since the configured time.
-		// Ignore this statement if player configured a negative number...
-		if (config.panelFadeTime() > 0 && Duration.between(lastExpDrop, Instant.now()).compareTo(Duration.ofSeconds(config.panelFadeTime())) >= 0)
+		if (!config.showBankstandingExperienceOverlay())
 		{
 			return super.render(graphics);
 		}
 
-		addExperienceOverlay();
+		// Don't render if player is too far away from a bank region.
+		if (experienceManager.getBankDistance().ordinal() > config.panelHideDistance().ordinal())
+		{
+			return super.render(graphics);
+		}
+
+		if (hasRecentlyGainedExp())
+		{
+			addExperienceOverlay();
+		}
 
 		return super.render(graphics);
+	}
+
+	private boolean hasRecentlyGainedExp()
+	{
+		Duration timeSinceLastExp = timeSinceLastExp();
+		Duration fadeTime = fadeTime();
+
+		return timeSinceLastExp.compareTo(fadeTime) <= 0;
+	}
+
+	private Duration fadeTime()
+	{
+		int seconds = Math.max(config.panelFadeTime(), 10);
+		return Duration.ofSeconds(seconds);
+	}
+
+	private Duration timeSinceLastExp()
+	{
+		return Duration.between(lastExpDrop, Instant.now());
 	}
 
 	private void addExperienceOverlay()
