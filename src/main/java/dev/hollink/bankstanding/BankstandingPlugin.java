@@ -33,10 +33,8 @@ import net.runelite.client.ui.NavigationButton;
 @Slf4j
 @PluginDescriptor(
 	name = "Bankstanding",
-	author = "mhollink, opaf",
 	description = "Gain (fake) experience with doing absolutely nothing",
 	tags = {"bankstanding", "xp", "experience", "nothing", "afk"}
-	
 )
 public class BankstandingPlugin extends Plugin
 {
