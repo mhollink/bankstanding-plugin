@@ -12,4 +12,4 @@ A Runelite plugin that awards you for doing nothing!
 
 ## In-game example
 
-![](screenshot.png)
+![](./screenshots/bankstanding-exp.png)
