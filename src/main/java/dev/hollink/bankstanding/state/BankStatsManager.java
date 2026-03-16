@@ -56,7 +56,7 @@ public class BankStatsManager
 			return;
 		}
 
-		getBankLocation().ifPresentOrElse(this::extracted, () -> currentLocation = null);
+		getBankLocation().ifPresentOrElse(this::addTickToBankLocation, () -> currentLocation = null);
 	}
 
 	private boolean bankIsOpen()
@@ -65,7 +65,7 @@ public class BankStatsManager
 		return bankWidget != null && !bankWidget.isHidden();
 	}
 
-	private void extracted(BankLocation bankLocation)
+	private void addTickToBankLocation(BankLocation bankLocation)
 	{
 		boolean idle = client.getLocalPlayer().getAnimation() == -1;
 
