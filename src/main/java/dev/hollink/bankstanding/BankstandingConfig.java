@@ -72,6 +72,16 @@ public interface BankstandingConfig extends Config
 	)
 	default ExperienceNotation experienceNotation() { return ExperienceNotation.AUTO; }
 
+	@ConfigItem(
+		keyName = "virtualLeveling",
+		name = "Use virtual level",
+		description = "Keep counting level after reaching 99, caps at 126 (200M)",
+		section = skill,
+		position = 3
+	)
+	default boolean showVirtualLevel() { return false; }
+
+
 	@ConfigSection(
 		name = "Bank stats",
 		description = "Bank stats",

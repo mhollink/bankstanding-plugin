@@ -108,7 +108,7 @@ public class ExperienceManager
 		}
 	}
 
-	private void grantExperience(ActivityState state)
+	public void grantExperience(ActivityState state)
 	{
 		double stateMultiplier = state.expMultiplier;
 		double bankMultiplier = getBankDistance().expMultiplier;

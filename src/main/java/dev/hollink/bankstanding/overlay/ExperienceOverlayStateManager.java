@@ -28,11 +28,11 @@ public class ExperienceOverlayStateManager
 	@Getter
 	private Instant lastExpDrop;
 	@Getter
+	private float progress;
+	@Getter
 	private int currentLvl;
 	private int currentXp;
 	private int xpToLevel;
-	@Getter
-	private float progress;
 
 	public void init()
 	{
@@ -73,8 +73,14 @@ public class ExperienceOverlayStateManager
 	{
 		if (event instanceof BankstandingExperienceGainedEvent)
 		{
-			BankstandingExperienceGainedEvent bankstanding = (BankstandingExperienceGainedEvent) event;
-			updateInternalState(bankstanding.getSkill().getCurrentLevel(), bankstanding.getSkill().getExperience());
+			BankstandingLevel bankstanding = ((BankstandingExperienceGainedEvent) event).getSkill();
+
+			double experience = bankstanding.getExperience();
+			int currentLevel = config.showVirtualLevel()
+				? bankstanding.getCurrentVLevel()
+				: bankstanding.getCurrentLevel();
+
+			updateInternalState(currentLevel, experience);
 		}
 	}
 
