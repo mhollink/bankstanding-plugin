@@ -1,6 +1,7 @@
 package dev.hollink.bankstanding;
 
 import dev.hollink.bankstanding.config.BankDistance;
+import dev.hollink.bankstanding.config.ExperienceNotation;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -24,10 +25,23 @@ public interface BankstandingConfig extends Config
 	String skill = "skill";
 
 	@ConfigItem(
+		keyName = "bankstandingExpOverlay",
+		name = "Show bankstanding experience overlay",
+		description = "Show the bankstanding experience panel whenever you gain experience",
+		section = skill,
+		position = 0
+	)
+	default boolean showBankstandingExperienceOverlay()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		keyName = "overlayTimout",
 		name = "Overlay timeout",
 		description = "Show the experience panel for N seconds after the last exp drop.",
-		section = skill
+		section = skill,
+		position = 1
 	)
 	@Units(Units.SECONDS)
 	default int panelFadeTime()
@@ -41,7 +55,8 @@ public interface BankstandingConfig extends Config
 		description = "Hide the overlay when moving outside a bank regardless of exp drops.<br/>" +
 			"Experience will still be earned within 25 tiles.<br/><br/>" +
 			"note: 0 disables this feature.",
-		section = skill
+		section = skill,
+		position = 2
 	)
 	default BankDistance panelHideDistance()
 	{
@@ -49,15 +64,13 @@ public interface BankstandingConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "bankstandingExpOverlay",
-		name = "Show bankstanding experience overlay",
-		description = "Show the bankstanding experience panel whenever you gain experience",
-		section = skill
+		keyName = "experienceNotation",
+		name = "Exp notation",
+		description = "Describes how EXP should be shown in the overlay",
+		section = skill,
+		position = 3
 	)
-	default boolean showBankstandingExperienceOverlay()
-	{
-		return true;
-	}
+	default ExperienceNotation experienceNotation() { return ExperienceNotation.AUTO; }
 
 	@ConfigSection(
 		name = "Bank stats",

@@ -125,11 +125,48 @@ public class BankstandingLevelProgressOverlay extends OverlayPanel implements Ov
 		setPanelWidth(160, panelComponent);
 		addPanelPadding(panelComponent);
 		addText("Bankstanding", String.valueOf(currentLvl), panelComponent);
-		addLabelledText("Current xp:", String.valueOf(currentXp), panelComponent);
-		addLabelledText("Xp to level:", String.valueOf(xpToLevel), panelComponent);
+		addLabelledText("Current xp:", valueOfExp(currentXp), panelComponent);
+		addLabelledText("Xp to level:", valueOfExp(xpToLevel), panelComponent);
 		addLineBreak(panelComponent);
 		addProgressBar(progress, panelComponent);
 	}
 
 
+	private String valueOfExp(int exp)
+	{
+		switch (config.experienceNotation())
+		{
+			case K:
+				return format(exp, 1_000, "K");
+			case M:
+				return format(exp, 1_000_000, "M");
+			case AUTO:
+				return autoFormat(exp);
+			case FULL:
+			default:
+				return String.valueOf(exp);
+		}
+	}
+
+	private String autoFormat(int exp)
+	{
+		if (exp >= 10_000_000)
+		{
+			return format(exp, 1_000_000, "M");
+		}
+		else if (exp >= 100_000)
+		{
+			return format(exp, 1_000, "K");
+		}
+		else
+		{
+			return String.valueOf(exp);
+		}
+	}
+
+	private String format(int value, int divisor, String suffix)
+	{
+		double result = (double) value / divisor;
+		return String.format("%.1f%s", result, suffix);
+	}
 }
