@@ -1,4 +1,4 @@
-package dev.hollink.bankstanding.overlay;
+package dev.hollink.bankstanding.overlay.debug;
 
 import dev.hollink.bankstanding.BankstandingConfig;
 import dev.hollink.bankstanding.config.BankLocation;

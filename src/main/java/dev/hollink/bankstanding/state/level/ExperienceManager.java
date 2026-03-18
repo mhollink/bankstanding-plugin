@@ -1,16 +1,12 @@
-package dev.hollink.bankstanding.state;
+package dev.hollink.bankstanding.state.level;
 
-import static dev.hollink.bankstanding.BankstandingConfig.CONFIG_GROUP;
-import static dev.hollink.bankstanding.BankstandingConfig.CURRENT_EXPERIENCE_CONFIG_KEY;
 import dev.hollink.bankstanding.config.ActivityState;
 import dev.hollink.bankstanding.config.BankDistance;
-import static dev.hollink.bankstanding.constant.ExperienceConstants.BASE_EXPERIENCE;
-import static dev.hollink.bankstanding.constant.TimeConstants.TIME_BETWEEN_DROPS;
-import static dev.hollink.bankstanding.constant.TimeConstants.TIME_TILL_INITIAL_EXP;
 import dev.hollink.bankstanding.domain.BankstandingLevel;
 import dev.hollink.bankstanding.events.BankstandingEvent;
 import dev.hollink.bankstanding.events.BankstandingEventBus;
 import dev.hollink.bankstanding.events.BankstandingPlayerStateChangedEvent;
+import dev.hollink.bankstanding.utils.BankDistanceFinder;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
@@ -19,16 +15,21 @@ import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.config.ConfigManager;
 
+import static dev.hollink.bankstanding.BankstandingConfig.CONFIG_GROUP;
+import static dev.hollink.bankstanding.BankstandingConfig.CURRENT_EXPERIENCE_CONFIG_KEY;
+import static dev.hollink.bankstanding.config.ExperienceConstants.BASE_EXPERIENCE;
+import static dev.hollink.bankstanding.config.TimeConstants.TIME_BETWEEN_DROPS;
+import static dev.hollink.bankstanding.config.TimeConstants.TIME_TILL_INITIAL_EXP;
+
 @Slf4j
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-public class BankstandingExperienceManager
+public class ExperienceManager
 {
 	private final Client client;
 	private final ConfigManager configManager;
@@ -113,8 +114,10 @@ public class BankstandingExperienceManager
 		double bankMultiplier = getBankDistance().expMultiplier;
 		double xpToGive = BASE_EXPERIENCE * bankMultiplier * stateMultiplier;
 
-		log.debug("Granting experience to {}", xpToGive);
+		log.debug("Granting {} Bankstanding experience to player ({}x{}x{})",
+			xpToGive, BASE_EXPERIENCE, bankMultiplier, stateMultiplier);
 		boolean hasLeveledUp = bankstanding.gainExperience(xpToGive);
+
 		configManager.setRSProfileConfiguration(
 			CONFIG_GROUP,
 			CURRENT_EXPERIENCE_CONFIG_KEY,

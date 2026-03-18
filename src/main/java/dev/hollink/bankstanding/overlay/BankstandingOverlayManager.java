@@ -1,5 +1,7 @@
 package dev.hollink.bankstanding.overlay;
 
+import dev.hollink.bankstanding.overlay.debug.BankLocationDebugOverlay;
+import dev.hollink.bankstanding.overlay.debug.PlayerStateDebugOverlay;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.RequiredArgsConstructor;
@@ -13,16 +15,14 @@ public class BankstandingOverlayManager
 {
 	private final OverlayManager overlayManager;
 
-	private final BankstandingLevelProgressOverlay progressOverlay;
-	private final BankstandingDebugOverlay debugInfoOverlay;
+	private final ExperienceOverlay progressOverlay;
+	private final PlayerStateDebugOverlay debugInfoOverlay;
 	private final BankLocationDebugOverlay debugBankOverlay;
 	private final ConfettiOverlay confettiOverlay;
 	private final BankStatsOverlay bankStatsOverlay;
 
 	public void init()
 	{
-		progressOverlay.init();
-
 		overlayManager.add(progressOverlay);
 		overlayManager.add(debugInfoOverlay);
 		overlayManager.add(debugBankOverlay);
@@ -37,7 +37,5 @@ public class BankstandingOverlayManager
 		overlayManager.remove(debugInfoOverlay);
 		overlayManager.remove(debugBankOverlay);
 		overlayManager.remove(bankStatsOverlay);
-
-		progressOverlay.destroy();
 	}
 }

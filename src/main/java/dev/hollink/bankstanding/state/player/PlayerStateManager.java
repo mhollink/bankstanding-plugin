@@ -1,9 +1,9 @@
-package dev.hollink.bankstanding.state;
+package dev.hollink.bankstanding.state.player;
 
 import dev.hollink.bankstanding.config.ActivityState;
-import static dev.hollink.bankstanding.constant.TimeConstants.GRACE_PERIOD_CHATTING;
-import static dev.hollink.bankstanding.constant.TimeConstants.GRACE_PERIOD_GRINDING;
-import static dev.hollink.bankstanding.constant.TimeConstants.GRACE_PERIOD_MOVEMENT;
+import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_CHATTING;
+import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_GRINDING;
+import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_MOVEMENT;
 import dev.hollink.bankstanding.domain.Activity;
 import dev.hollink.bankstanding.domain.PlayerState;
 import dev.hollink.bankstanding.events.BankstandingEvent;
@@ -45,11 +45,9 @@ public class PlayerStateManager
 
 	public void startUp()
 	{
-		currentPlayerState = new PlayerState(Instant.now(), ActivityState.GRINDING);
+		currentPlayerState = new PlayerState(Instant.now(), ActivityState.NULL);
 
-		// Setting the initial timers for each activity. Starting the 'EXP' drop timer to now.
-		// This ensures the player does not start getting EXP until the first state switch.
-		lastExperienceDrop = new Activity<>(client.getOverallExperience(), Instant.now());
+		lastExperienceDrop = new Activity<>(client.getOverallExperience(), Instant.EPOCH);
 		lastMovement = new Activity<>(client.getLocalPlayer().getWorldLocation(), Instant.EPOCH);
 		lastChatMessage = new Activity<>(null, Instant.EPOCH);
 
@@ -84,10 +82,10 @@ public class PlayerStateManager
 	private void updateExpTimer()
 	{
 		long currentXp = client.getOverallExperience();
-		boolean gained = currentXp > lastExperienceDrop.getValue();
-		if (gained)
+		long gained = currentXp - lastExperienceDrop.getValue();
+		if (gained > 0)
 		{
-			log.debug("Player has gained experience!");
+			log.debug("Player has gained {} experience!", gained);
 			lastExperienceDrop = new Activity<>(currentXp, Instant.now());
 		}
 	}
@@ -95,10 +93,10 @@ public class PlayerStateManager
 	private void updateMovementTimer()
 	{
 		WorldPoint location = client.getLocalPlayer().getWorldLocation();
-		boolean moved = location.distanceTo(lastMovement.getValue()) > 5;
-		if (moved)
+		int distanceMoved = location.distanceTo(lastMovement.getValue());
+		if (distanceMoved > 5)
 		{
-			log.debug("Player has moved!");
+			log.debug("Player has to moved {} tiles!", distanceMoved);
 			lastMovement = new Activity<>(location, Instant.now());
 		}
 	}

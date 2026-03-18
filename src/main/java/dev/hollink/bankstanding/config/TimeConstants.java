@@ -1,4 +1,4 @@
-package dev.hollink.bankstanding.constant;
+package dev.hollink.bankstanding.config;
 
 import java.time.Duration;
 

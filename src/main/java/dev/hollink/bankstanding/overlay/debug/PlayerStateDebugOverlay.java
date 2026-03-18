@@ -1,16 +1,17 @@
-package dev.hollink.bankstanding.overlay;
+package dev.hollink.bankstanding.overlay.debug;
 
 import dev.hollink.bankstanding.BankstandingConfig;
-import static dev.hollink.bankstanding.constant.TimeConstants.GRACE_PERIOD_CHATTING;
-import static dev.hollink.bankstanding.constant.TimeConstants.GRACE_PERIOD_GRINDING;
-import static dev.hollink.bankstanding.constant.TimeConstants.GRACE_PERIOD_MOVEMENT;
-import static dev.hollink.bankstanding.constant.TimeConstants.TIME_BETWEEN_DROPS;
-import static dev.hollink.bankstanding.constant.TimeConstants.TIME_TILL_INITIAL_EXP;
+import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_CHATTING;
+import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_GRINDING;
+import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_MOVEMENT;
+import static dev.hollink.bankstanding.config.TimeConstants.TIME_BETWEEN_DROPS;
+import static dev.hollink.bankstanding.config.TimeConstants.TIME_TILL_INITIAL_EXP;
 import dev.hollink.bankstanding.domain.Activity;
 import dev.hollink.bankstanding.domain.PlayerState;
-import dev.hollink.bankstanding.state.BankDistanceFinder;
-import dev.hollink.bankstanding.state.BankstandingExperienceManager;
-import dev.hollink.bankstanding.state.PlayerStateManager;
+import dev.hollink.bankstanding.overlay.OverlayHelper;
+import dev.hollink.bankstanding.utils.BankDistanceFinder;
+import dev.hollink.bankstanding.state.level.ExperienceManager;
+import dev.hollink.bankstanding.state.player.PlayerStateManager;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.time.Duration;
@@ -26,13 +27,13 @@ import net.runelite.client.ui.overlay.OverlayPanel;
 @Slf4j
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-public class BankstandingDebugOverlay extends OverlayPanel implements OverlayHelper
+public class PlayerStateDebugOverlay extends OverlayPanel implements OverlayHelper
 {
 	private final Client client;
 	private final BankstandingConfig config;
 
 	private final PlayerStateManager stateManager;
-	private final BankstandingExperienceManager xpManager;
+	private final ExperienceManager xpManager;
 
 	@Override
 	public Dimension render(Graphics2D graphics)

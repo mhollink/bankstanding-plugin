@@ -1,14 +1,15 @@
 package dev.hollink.bankstanding;
 
 import com.google.inject.Provides;
-import dev.hollink.bankstanding.overlay.BankstandingLevelProgressOverlay;
+import dev.hollink.bankstanding.overlay.ExperienceOverlay;
 import dev.hollink.bankstanding.overlay.BankstandingOverlayManager;
+import dev.hollink.bankstanding.overlay.ExperienceOverlayStateManager;
 import dev.hollink.bankstanding.panel.BankstandingPanel;
-import dev.hollink.bankstanding.state.BankStatsManager;
-import dev.hollink.bankstanding.state.BankstandingExperienceManager;
+import dev.hollink.bankstanding.state.bankstats.BankStatsManager;
+import dev.hollink.bankstanding.state.level.ExperienceManager;
 import dev.hollink.bankstanding.state.ChatCommandHandler;
-import dev.hollink.bankstanding.state.LevelUpHandler;
-import dev.hollink.bankstanding.state.PlayerStateManager;
+import dev.hollink.bankstanding.state.level.LevelUpHandler;
+import dev.hollink.bankstanding.state.player.PlayerStateManager;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -45,13 +46,13 @@ public class BankstandingPlugin extends Plugin
 	private PlayerStateManager playerStateManager;
 
 	@Inject
-	private BankstandingExperienceManager experienceManager;
+	private ExperienceManager experienceManager;
 
 	@Inject
 	private BankstandingOverlayManager overlayManager;
 
 	@Inject
-	private BankstandingLevelProgressOverlay progressOverlay;
+	private ExperienceOverlayStateManager progressOverlayStateManager;
 
 	@Inject
 	private ChatCommandManager chatCommandManager;
@@ -76,6 +77,7 @@ public class BankstandingPlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
+		progressOverlayStateManager.init();
 		experienceManager.init();
 		overlayManager.init();
 		levelUpHandler.init();
@@ -88,9 +90,12 @@ public class BankstandingPlugin extends Plugin
 	@Override
 	protected void shutDown()
 	{
+		bankStatsManager.saveData();
+
 		overlayManager.destroy();
 		experienceManager.destroy();
 		levelUpHandler.destroy();
+		progressOverlayStateManager.destroy();
 
 		chatCommandManager.unregisterCommand("!lvl");
 		clientToolbar.removeNavigation(navButton);
@@ -104,7 +109,7 @@ public class BankstandingPlugin extends Plugin
 			log.debug("Player logged in, start bankstanding experience tracking");
 			playerStateManager.startUp();
 			experienceManager.startUp();
-			progressOverlay.startUp();
+			progressOverlayStateManager.startUp();
 			bankStatsManager.startUp();
 		}
 	}

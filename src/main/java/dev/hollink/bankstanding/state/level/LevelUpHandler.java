@@ -1,4 +1,4 @@
-package dev.hollink.bankstanding.state;
+package dev.hollink.bankstanding.state.level;
 
 import dev.hollink.bankstanding.domain.BankstandingLevel;
 import dev.hollink.bankstanding.events.BankstandingEvent;
@@ -47,6 +47,7 @@ public class LevelUpHandler
 		playLevelUpSound();
 		confetti.trigger(Duration.ofSeconds(5));
 		sendLevelUpMessage(xpEvent.getSkill());
+		log.debug("Bankstanding has been level up to {}", xpEvent.getSkill().getCurrentLevel());
 	}
 
 	private void sendLevelUpMessage(BankstandingLevel skill)

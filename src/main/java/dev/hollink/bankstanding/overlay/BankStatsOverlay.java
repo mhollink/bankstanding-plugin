@@ -3,7 +3,7 @@ package dev.hollink.bankstanding.overlay;
 import dev.hollink.bankstanding.BankstandingConfig;
 import dev.hollink.bankstanding.config.BankLocation;
 import dev.hollink.bankstanding.domain.BankStats;
-import dev.hollink.bankstanding.state.BankStatsManager;
+import dev.hollink.bankstanding.state.bankstats.BankStatsManager;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.util.Optional;

@@ -12,12 +12,20 @@ A Runelite plugin that awards you for doing nothing!
 * Additionally, tracks time spent in the banks or Gielinor.
 * Provides a side panel with time spent idle/active and shows visits per bank.
 
-## In-game example
+## Bank-bug bounty
 
+Bank areas are manually mapped and mostly taken from the Wiki. There *will* be missing or incorrectly placed bank's. 
+If you find a missing or incorrectly placed bank, please report these using the "Missing or incorrect bank" template 
+on GitHub. Reporters will receive a 100K bounty when the location is added.
+
+## Examples
+
+**Bankstanding Level**
 ![](./screenshots/bankstanding-exp.png)
+
+**Banking session**
 ![](./screenshots/active-bank-stats.png)
 
-## Plugin Panel
-
+**Banking stat panel**
 ![](./screenshots/all-time-bank-stats.png)
 

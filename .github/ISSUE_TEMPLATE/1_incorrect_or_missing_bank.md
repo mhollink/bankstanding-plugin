@@ -12,4 +12,8 @@ Which bank is missing or incorrect?
 Add screenshot of the bank with debug tools enabled.
 
 ## World location
-Please provide the world location (x, y, plane) of the bank. Can be found with the World Location plugin.
+Please provide the world location (x, y, plane) of the bank. 
+Can be found with the World Location plugin (https://runelite.net/plugin-hub/show/world-location).
+
+## RSN (optional)
+Your Runescape name so we can award you the bug-finder bounty.

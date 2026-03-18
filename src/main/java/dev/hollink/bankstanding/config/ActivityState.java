@@ -10,7 +10,8 @@ public enum ActivityState
 	AFK(1.2),
 	CHATTING(1.1),
 	LOAFING(0.3),
-	GRINDING(0);
+	GRINDING(0),
+	NULL(0);
 
 	public final double expMultiplier;
 }

@@ -2,7 +2,7 @@ package dev.hollink.bankstanding.panel;
 
 import dev.hollink.bankstanding.config.BankLocation;
 import dev.hollink.bankstanding.domain.BankStats;
-import dev.hollink.bankstanding.state.BankStatsManager;
+import dev.hollink.bankstanding.state.bankstats.BankStatsManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;

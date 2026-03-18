@@ -1,4 +1,4 @@
-package dev.hollink.bankstanding.state;
+package dev.hollink.bankstanding.state.bankstats;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -7,6 +7,7 @@ import dev.hollink.bankstanding.BankstandingPlugin;
 import dev.hollink.bankstanding.config.BankDistance;
 import dev.hollink.bankstanding.config.BankLocation;
 import dev.hollink.bankstanding.domain.BankStats;
+import dev.hollink.bankstanding.utils.BankDistanceFinder;
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,7 +29,7 @@ import net.runelite.client.config.ConfigManager;
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class BankStatsManager
 {
-	private static final int SAVE_INTERVAL_TICKS = 10;
+	private static final int SAVE_INTERVAL_TICKS = 100; // every 1 minute.
 
 	private final Client client;
 	private final BankstandingPlugin plugin;
@@ -128,7 +129,7 @@ public class BankStatsManager
 		return typeToken.getType();
 	}
 
-	private void saveData()
+	public void saveData()
 	{
 		String data = gson.toJson(allTimeStats);
 		log.debug("Saving data... {}", data);

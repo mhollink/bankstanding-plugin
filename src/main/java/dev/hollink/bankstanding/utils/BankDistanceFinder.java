@@ -1,4 +1,4 @@
-package dev.hollink.bankstanding.state;
+package dev.hollink.bankstanding.utils;
 
 import dev.hollink.bankstanding.config.BankDistance;
 import dev.hollink.bankstanding.config.BankLocation;
