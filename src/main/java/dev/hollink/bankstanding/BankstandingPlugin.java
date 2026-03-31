@@ -14,11 +14,14 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.Player;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
@@ -73,6 +76,8 @@ public class BankstandingPlugin extends Plugin
 	private ClientToolbar clientToolbar;
 	private NavigationButton navButton;
 
+	private Player currentPlayer = null;
+
 	@Override
 	protected void startUp()
 	{
@@ -103,27 +108,23 @@ public class BankstandingPlugin extends Plugin
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged gameStateChanged)
 	{
-		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
+		List<GameState> resettableStates = List.of(GameState.LOGIN_SCREEN, GameState.HOPPING);
+		if (resettableStates.contains(gameStateChanged.getGameState()))
 		{
-			log.debug("Player logged in, start bankstanding experience tracking");
-			playerStateManager.startUp();
-			experienceManager.startUp();
-			progressOverlayStateManager.startUp();
-			bankStatsManager.startUp();
+			log.debug("Resetting state due to sign-out/hopping");
+			currentPlayer = null;
 		}
 	}
 
 	@Subscribe
 	public void onGameTick(GameTick tick)
 	{
-		if (client.getLocalPlayer() == null)
+		if (isPlaying())
 		{
-			return;
+			playerStateManager.checkForStateChanges();
+			experienceManager.onTick();
+			bankStatsManager.onTick();
 		}
-
-		playerStateManager.checkForStateChanges();
-		experienceManager.onTick();
-		bankStatsManager.onTick();
 	}
 
 	@Subscribe
@@ -137,7 +138,6 @@ public class BankstandingPlugin extends Plugin
 	{
 		return configManager.getConfig(BankstandingConfig.class);
 	}
-
 
 	private NavigationButton buildNavButton()
 	{
@@ -161,5 +161,49 @@ public class BankstandingPlugin extends Plugin
 			.priority(6)
 			.panel(bankStatsPanel)
 			.build();
+	}
+
+	private boolean isPlaying()
+	{
+		Player player = client.getLocalPlayer();
+		if (player == null)
+		{
+			// There is no player object,
+			// so we are not actively in-game
+			return false;
+		}
+
+		if (currentPlayer == null)
+		{
+			// There is a player object, but no current player;
+			// Wake-up all components and assign the current player.
+			startBankstanding(player);
+			return true;
+		}
+
+		if (Objects.equals(player.getName(), currentPlayer.getName()))
+		{
+			// The client is still using the same active player;
+			// Continue bankstanding...
+			return true;
+		}
+		else
+		{
+			// There was a switch within the active player;
+			// Restart all the components and continue bankstanding...
+			startBankstanding(player);
+			return true;
+		}
+	}
+
+	private void startBankstanding(Player player)
+	{
+		currentPlayer = player;
+		log.debug("Player {} logged in, start bankstanding experience tracking", player.getName());
+
+		playerStateManager.startUp();
+		experienceManager.startUp();
+		progressOverlayStateManager.startUp();
+		bankStatsManager.startUp();
 	}
 }

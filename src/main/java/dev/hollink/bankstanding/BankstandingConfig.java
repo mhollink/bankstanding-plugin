@@ -143,5 +143,15 @@ public interface BankstandingConfig extends Config
 		return false;
 	}
 
+	@ConfigItem(
+		keyName = "logSavedBankTracking",
+		name = "Log saved data",
+		description = "Add the 'all-time' save data to the debug log on plugin start",
+		section = DEBUG_SECTION
+	)
+	default boolean debugLogSaveData()
+	{
+		return false;
+	}
 
 }

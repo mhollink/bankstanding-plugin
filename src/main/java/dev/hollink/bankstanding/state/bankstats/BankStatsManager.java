@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dev.hollink.bankstanding.BankstandingConfig;
 import dev.hollink.bankstanding.BankstandingPlugin;
-import dev.hollink.bankstanding.config.BankDistance;
 import dev.hollink.bankstanding.config.BankLocation;
 import dev.hollink.bankstanding.domain.BankStats;
 import dev.hollink.bankstanding.utils.BankDistanceFinder;
@@ -22,8 +21,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.coords.WorldPoint;
-import net.runelite.api.gameval.InterfaceID;
-import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
 
 import static net.runelite.api.gameval.InterfaceID.BANKMAIN;
@@ -58,7 +55,8 @@ public class BankStatsManager
 
 	public void onTick()
 	{
-		if (config.excludeBankOpen() && bankIsOpen()) {
+		if (config.excludeBankOpen() && bankIsOpen())
+		{
 			return;
 		}
 
@@ -119,12 +117,24 @@ public class BankStatsManager
 			{
 				allTimeStats.clear();
 				allTimeStats.putAll(loaded);
-				log.debug("Loaded saved data... {}", loaded);
+				logSaveDataLoaded(loaded);
 			}
 		}
 		catch (Exception ex)
 		{
 			log.warn("Failed to load bankstanding stats", ex);
+		}
+	}
+
+	private void logSaveDataLoaded(Map<BankLocation, BankStats> loaded)
+	{
+		if (config.debugLogSaveData())
+		{
+			log.debug("Loaded saved data... {}", loaded);
+		}
+		else
+		{
+			log.debug("Loaded saved data...");
 		}
 	}
 

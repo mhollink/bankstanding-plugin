@@ -1,9 +1,6 @@
 package dev.hollink.bankstanding.state.player;
 
 import dev.hollink.bankstanding.config.ActivityState;
-import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_CHATTING;
-import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_GRINDING;
-import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_MOVEMENT;
 import dev.hollink.bankstanding.domain.Activity;
 import dev.hollink.bankstanding.domain.PlayerState;
 import dev.hollink.bankstanding.events.BankstandingEvent;
@@ -16,12 +13,17 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
+import net.runelite.api.Client;
+import net.runelite.api.Player;
+import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.ChatMessage;
+
+import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_CHATTING;
+import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_GRINDING;
+import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_MOVEMENT;
 import static net.runelite.api.ChatMessageType.CLAN_CHAT;
 import static net.runelite.api.ChatMessageType.PRIVATECHATOUT;
 import static net.runelite.api.ChatMessageType.PUBLICCHAT;
-import net.runelite.api.Client;
-import net.runelite.api.coords.WorldPoint;
-import net.runelite.api.events.ChatMessage;
 
 @Slf4j
 @Singleton
@@ -67,11 +69,15 @@ public class PlayerStateManager
 
 	public void onChatMessage(ChatMessage event)
 	{
-		final String playerName = client.getLocalPlayer().getName();
+		Player player = client.getLocalPlayer();
+		if (player == null)
+		{
+			return;
+		}
 		final List<ChatMessageType> messageTypes = List.of(PUBLICCHAT, PRIVATECHATOUT, CLAN_CHAT);
 
 		boolean isChatMessage = messageTypes.contains(event.getType());
-		boolean isFromPlayer = event.getName() != null && event.getName().equals(playerName);
+		boolean isFromPlayer = event.getName() != null && event.getName().equals(player.getName());
 		if (isChatMessage && isFromPlayer)
 		{
 			log.debug("Player has sent a chat message!");
@@ -94,7 +100,7 @@ public class PlayerStateManager
 	{
 		WorldPoint location = client.getLocalPlayer().getWorldLocation();
 		int distanceMoved = location.distanceTo(lastMovement.getValue());
-		if (distanceMoved > 5)
+		if (distanceMoved > 3)
 		{
 			log.debug("Player has to moved {} tiles!", distanceMoved);
 			lastMovement = new Activity<>(location, Instant.now());
