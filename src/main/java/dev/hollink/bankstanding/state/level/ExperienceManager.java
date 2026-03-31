@@ -103,31 +103,37 @@ public class ExperienceManager
 
 		if (Duration.between(lastExpDrop, now).compareTo(TIME_BETWEEN_DROPS) >= 0)
 		{
-			grantExperience(lastState);
-			lastExpDrop = now;
+			double granted = grantExperience(lastState);
+			if (granted > 0) {
+				lastExpDrop = now;
+			};
 		}
 	}
 
-	public void grantExperience(ActivityState state)
+	public double grantExperience(ActivityState state)
 	{
 		double xpToGive = ExpRateConstants.calculateExpGain(state, getBankDistance());
 
-		log.debug("Granting {} Bankstanding experience to player", xpToGive);
-		boolean hasLeveledUp = bankstanding.gainExperience(xpToGive);
+		if (xpToGive > 0) {
+			log.debug("Granting {} Bankstanding experience to player", xpToGive);
+			boolean hasLeveledUp = bankstanding.gainExperience(xpToGive);
 
-		configManager.setRSProfileConfiguration(
-			CONFIG_GROUP,
-			CURRENT_EXPERIENCE_CONFIG_KEY,
-			String.valueOf(bankstanding.getExperience())
-		);
+			configManager.setRSProfileConfiguration(
+				CONFIG_GROUP,
+				CURRENT_EXPERIENCE_CONFIG_KEY,
+				String.valueOf(bankstanding.getExperience())
+			);
 
-		events.publish(
-			BankstandingEvent.experienceGained()
-				.skill(bankstanding)
-				.experienceGained(xpToGive)
-				.leveledUp(hasLeveledUp)
-				.build()
-		);
+			events.publish(
+				BankstandingEvent.experienceGained()
+					.skill(bankstanding)
+					.experienceGained(xpToGive)
+					.leveledUp(hasLeveledUp)
+					.build()
+			);
+		}
+
+		return xpToGive;
 	}
 
 	public BankDistance getBankDistance()

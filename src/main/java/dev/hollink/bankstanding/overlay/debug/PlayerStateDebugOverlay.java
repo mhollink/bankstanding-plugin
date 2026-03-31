@@ -99,7 +99,8 @@ public class PlayerStateDebugOverlay extends OverlayPanel implements OverlayHelp
 		}
 		else
 		{
-			return Duration.between(Instant.now(), xpManager.getLastExpDrop().plus(TIME_BETWEEN_DROPS)).toSeconds();
+			long secondsTillNextExpDrop = Duration.between(Instant.now(), xpManager.getLastExpDrop().plus(TIME_BETWEEN_DROPS)).toSeconds();
+			return Math.max(secondsTillNextExpDrop, 0);
 		}
 	}
 
