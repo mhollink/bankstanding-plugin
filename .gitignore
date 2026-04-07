@@ -9,4 +9,3 @@ nb-configuration.xml
 nbproject/
 run.bat
 commit.bat
-src/test/java/dev/hollink/bankstanding/RunClient.java

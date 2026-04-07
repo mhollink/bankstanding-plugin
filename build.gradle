@@ -49,7 +49,7 @@ tasks.register('run', JavaExec) {
 
 tasks.register('runTest', JavaExec) {
 	classpath = sourceSets.test.runtimeClasspath
-	mainClass = 'dev.hollink.bankstanding.RunClient'
+	mainClass = 'dev.hollink.bankstanding.BankstandingPluginTest'
 
 	jvmArgs "-ea"
 	args "--developer-mode", "--debug"
