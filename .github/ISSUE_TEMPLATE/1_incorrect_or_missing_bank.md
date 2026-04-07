@@ -2,7 +2,7 @@
 name: 💰 Missing or incorrect bank
 about: Report an incorrectly marked or missing bank in the plugin
 title: "[Bank] Bank name"
-labels: bug
+labels: bank
 ---
 
 ## Description
