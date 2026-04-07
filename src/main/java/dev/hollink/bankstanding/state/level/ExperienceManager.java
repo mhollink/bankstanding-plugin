@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
@@ -25,7 +26,6 @@ import net.runelite.client.config.ConfigManager;
 import static dev.hollink.bankstanding.BankstandingConfig.CONFIG_GROUP;
 import static dev.hollink.bankstanding.BankstandingConfig.CURRENT_EXPERIENCE_CONFIG_KEY;
 import static dev.hollink.bankstanding.config.ExpRateConstants.TIME_BETWEEN_DROPS;
-import static dev.hollink.bankstanding.config.TimeConstants.TIME_TILL_INITIAL_EXP;
 
 @Slf4j
 @Singleton
@@ -47,6 +47,7 @@ public class ExperienceManager
 	private ActivityState lastState = ActivityState.GRINDING;
 
 	@Getter
+	@Setter
 	private BankstandingLevel bankstanding = new BankstandingLevel(0);
 
 	public void init()
@@ -102,12 +103,6 @@ public class ExperienceManager
 		}
 
 		Instant now = Instant.now();
-		Duration timeInState = Duration.between(lastStateChange, now);
-		if (timeInState.compareTo(TIME_TILL_INITIAL_EXP) < 0)
-		{
-			return;
-		}
-
 		if (Duration.between(lastExpDrop, now).compareTo(TIME_BETWEEN_DROPS) >= 0)
 		{
 			double granted = grantExperience(lastState);

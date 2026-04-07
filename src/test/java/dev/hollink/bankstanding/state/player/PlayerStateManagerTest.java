@@ -1,6 +1,7 @@
 package dev.hollink.bankstanding.state.player;
 
 import dev.hollink.bankstanding.config.ActivityState;
+import dev.hollink.bankstanding.domain.PlayerState;
 import dev.hollink.bankstanding.events.BankstandingEvent;
 import dev.hollink.bankstanding.events.BankstandingEventBus;
 import dev.hollink.bankstanding.events.BankstandingPlayerStateChangedEvent;
@@ -43,6 +44,9 @@ public class PlayerStateManagerTest
 
 		playerStateManager = new PlayerStateManager(mockClient, mockEventBus);
 		playerStateManager.startUp();
+
+		// Set null state way back to skip the grace period.
+		playerStateManager.setCurrentPlayerState(new PlayerState(Instant.EPOCH, ActivityState.NULL));
 	}
 
 	@Test
@@ -109,14 +113,9 @@ public class PlayerStateManagerTest
 	@Test
 	public void movementUpdate_shouldUpdateLastMovement_ifDistanceExceeded()
 	{
-		WorldPoint initialLocation = new WorldPoint(0, 0, 0);
-		WorldPoint movedLocation = new WorldPoint(10, 0, 0);
-
-		when(mockPlayer.getWorldLocation()).thenReturn(initialLocation);
-		playerStateManager.startUp();
-
+		WorldPoint startLocation = GRAND_EXCHANGE.getCenterPoint();
+		WorldPoint movedLocation = new WorldPoint(startLocation.getX() + 10, startLocation.getY() - 10, 0);
 		when(mockPlayer.getWorldLocation()).thenReturn(movedLocation);
-
 		Instant before = playerStateManager.getLastMovement().getTime();
 
 		playerStateManager.checkForStateChanges();

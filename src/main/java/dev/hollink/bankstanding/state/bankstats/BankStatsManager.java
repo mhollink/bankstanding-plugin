@@ -122,7 +122,7 @@ public class BankStatsManager
 			{
 				allTimeStats.clear();
 				allTimeStats.putAll(loaded);
-				logSaveDataLoaded(loaded);
+				logSaveData(loaded, "Loaded saved data...");
 			}
 		}
 		catch (Exception ex)
@@ -131,15 +131,15 @@ public class BankStatsManager
 		}
 	}
 
-	private void logSaveDataLoaded(Map<BankLocation, BankStats> loaded)
+	private void logSaveData(Map<BankLocation, BankStats> loaded, String message)
 	{
 		if (config.debugLogSaveData())
 		{
-			log.debug("Loaded saved data... {}", loaded);
+			log.debug("{} {}", message, loaded);
 		}
 		else
 		{
-			log.debug("Loaded saved data...");
+			log.debug(message);
 		}
 	}
 
@@ -154,7 +154,7 @@ public class BankStatsManager
 	public void saveData()
 	{
 		String data = gson.toJson(allTimeStats);
-		log.debug("Saving data... {}", data);
+		logSaveData(allTimeStats, "Saving data...");
 		configManager.setRSProfileConfiguration(BankstandingConfig.CONFIG_GROUP, "bankStats", data);
 	}
 

@@ -84,6 +84,13 @@ public class ExperienceOverlayStateManager
 		}
 	}
 
+	public void refreshExperience()
+	{
+		BankstandingLevel bankstanding = experienceManager.getBankstanding();
+		updateInternalState(bankstanding.getCurrentLevel(), bankstanding.getExperience());
+		lastExpDrop = Instant.now();
+	}
+
 	private void updateInternalState(int currentLevel, double currentExperience)
 	{
 		int xpAtStartOfLevel = Experience.getXpForLevel(currentLevel);
