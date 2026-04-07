@@ -56,7 +56,6 @@ public class LevelCommandHandler implements CommandHandler
 		}
 
 		String category = args[1].toLowerCase();
-		log.debug("Received level command: {}", category);
 		switch (category)
 		{
 			case "bs":

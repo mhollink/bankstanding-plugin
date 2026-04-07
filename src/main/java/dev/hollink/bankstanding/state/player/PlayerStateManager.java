@@ -9,8 +9,10 @@ import java.time.Instant;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -21,6 +23,7 @@ import net.runelite.api.events.ChatMessage;
 import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_CHATTING;
 import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_GRINDING;
 import static dev.hollink.bankstanding.config.TimeConstants.GRACE_PERIOD_MOVEMENT;
+import static dev.hollink.bankstanding.config.TimeConstants.TIME_TILL_INITIAL_EXP;
 import static net.runelite.api.ChatMessageType.CLAN_CHAT;
 import static net.runelite.api.ChatMessageType.PRIVATECHATOUT;
 import static net.runelite.api.ChatMessageType.PUBLICCHAT;
@@ -34,6 +37,7 @@ public class PlayerStateManager
 	private final BankstandingEventBus events;
 
 	@Getter
+	@Setter(AccessLevel.PACKAGE)
 	private PlayerState currentPlayerState;
 
 	@Getter
@@ -50,7 +54,7 @@ public class PlayerStateManager
 		currentPlayerState = new PlayerState(Instant.now(), ActivityState.NULL);
 
 		lastExperienceDrop = new Activity<>(client.getOverallExperience(), Instant.EPOCH);
-		lastMovement = new Activity<>(client.getLocalPlayer().getWorldLocation(), Instant.EPOCH);
+		lastMovement = new Activity<>(client.getLocalPlayer().getWorldLocation(), Instant.now());
 		lastChatMessage = new Activity<>(null, Instant.EPOCH);
 
 		log.debug("PlayerStateManager started");
@@ -58,6 +62,12 @@ public class PlayerStateManager
 
 	public void checkForStateChanges()
 	{
+		if (isWithinInitialGracePeriod())
+		{
+			// wait till the initial grace period is over!
+			return;
+		}
+
 		updateActivityTimers();
 
 		ActivityState activity = determineCurrentActivity();
@@ -65,6 +75,12 @@ public class PlayerStateManager
 		{
 			currentPlayerState = switchActivity(activity);
 		}
+	}
+
+	private boolean isWithinInitialGracePeriod()
+	{
+		return currentPlayerState.getActivity().equals(ActivityState.NULL)
+			&& currentPlayerState.getSince().isAfter(Instant.now().minus(TIME_TILL_INITIAL_EXP));
 	}
 
 	public void onChatMessage(ChatMessage event)

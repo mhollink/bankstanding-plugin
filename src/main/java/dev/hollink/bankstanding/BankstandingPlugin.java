@@ -17,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Objects;
 import javax.inject.Inject;
+import javax.inject.Named;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
@@ -68,6 +69,10 @@ public class BankstandingPlugin extends Plugin
 	@Inject
 	private LevelUpHandler levelUpHandler;
 
+	@Inject
+	@Named("developerMode")
+	private boolean developerMode;
+
 	@Getter
 	@Inject
 	private BankstandingPanel bankStatsPanel;
@@ -87,8 +92,11 @@ public class BankstandingPlugin extends Plugin
 		levelUpHandler.init();
 
 		chatCommandManager.registerCommand("!lvl", chatCommandHandler::handleLevelCommand);
-		clientToolbar.addNavigation(navButton = buildNavButton());
+		if (developerMode) {
+			chatCommandManager.registerCommand("!setBankstanding", chatCommandHandler::handleSetLevelCommand);
+		}
 
+		clientToolbar.addNavigation(navButton = buildNavButton());
 	}
 
 	@Override
@@ -102,6 +110,10 @@ public class BankstandingPlugin extends Plugin
 		progressOverlayStateManager.destroy();
 
 		chatCommandManager.unregisterCommand("!lvl");
+		if (developerMode) {
+			chatCommandManager.unregisterCommand("!setBankstanding");
+		}
+
 		clientToolbar.removeNavigation(navButton);
 	}
 

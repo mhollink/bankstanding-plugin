@@ -79,6 +79,8 @@ public class PlayerStateDebugOverlay extends OverlayPanel implements OverlayHelp
 		PlayerState currentPlayerState = stateManager.getCurrentPlayerState();
 		switch (currentPlayerState.getActivity())
 		{
+			case NULL:
+				return secondsSince(stateManager.getCurrentPlayerState().getSince(), TIME_TILL_INITIAL_EXP);
 			case CHATTING:
 				return secondsSince(stateManager.getLastChatMessage(), GRACE_PERIOD_CHATTING);
 			case LOAFING:
@@ -89,24 +91,21 @@ public class PlayerStateDebugOverlay extends OverlayPanel implements OverlayHelp
 		return 0;
 	}
 
-
 	public long timeTillExpDrop()
 	{
-		long secondsTillInitialDrop = Duration.between(Instant.now(), xpManager.getLastStateChange().plus(TIME_TILL_INITIAL_EXP)).toSeconds();
-		if (secondsTillInitialDrop > 0)
-		{
-			return secondsTillInitialDrop;
-		}
-		else
-		{
-			long secondsTillNextExpDrop = Duration.between(Instant.now(), xpManager.getLastExpDrop().plus(TIME_BETWEEN_DROPS)).toSeconds();
-			return Math.max(secondsTillNextExpDrop, 0);
-		}
+		long secondsTillNextExpDrop = Duration.between(Instant.now(), xpManager.getLastExpDrop().plus(TIME_BETWEEN_DROPS)).toSeconds();
+		return Math.max(secondsTillNextExpDrop, 0);
+	}
+
+	private long secondsSince(Instant from, Duration gracePeriod)
+	{
+		long secondsTillNextExpDrop = Duration.between(Instant.now(), from.plus(gracePeriod)).toSeconds();
+		return Math.max(secondsTillNextExpDrop, 0);
 	}
 
 	private long secondsSince(Activity<?> activity, Duration gracePeriod)
 	{
-		return Duration.between(Instant.now(), activity.getTime().plus(gracePeriod)).toSeconds();
+		return secondsSince(activity.getTime(), gracePeriod);
 	}
 
 	private String enumToString(String name)
