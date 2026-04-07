@@ -1,5 +1,6 @@
 package dev.hollink.bankstanding.state.level;
 
+import dev.hollink.bankstanding.BankstandingConfig;
 import dev.hollink.bankstanding.config.ActivityState;
 import dev.hollink.bankstanding.config.BankDistance;
 import dev.hollink.bankstanding.config.ExpRateConstants;
@@ -34,6 +35,7 @@ public class ExperienceManager
 	private final Client client;
 	private final ConfigManager configManager;
 	private final BankstandingEventBus events;
+	private final BankstandingConfig config;
 
 	@Getter
 	private Instant lastExpDrop = Instant.now();
@@ -94,6 +96,11 @@ public class ExperienceManager
 
 	public void onTick()
 	{
+		if (!config.enableLeveling())
+		{
+			return;
+		}
+
 		Instant now = Instant.now();
 		Duration timeInState = Duration.between(lastStateChange, now);
 		if (timeInState.compareTo(TIME_TILL_INITIAL_EXP) < 0)
@@ -106,7 +113,7 @@ public class ExperienceManager
 			double granted = grantExperience(lastState);
 			if (granted > 0) {
 				lastExpDrop = now;
-			};
+			}
 		}
 	}
 

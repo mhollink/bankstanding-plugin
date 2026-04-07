@@ -25,11 +25,20 @@ public interface BankstandingConfig extends Config
 	String skill = "skill";
 
 	@ConfigItem(
+		keyName = "enableLeveling",
+		name = "Enable leveling",
+		description = "Enables Bankstanding experience gain and level-up notifications",
+		section = skill,
+		position = 0
+	)
+	default boolean enableLeveling() { return true; }
+
+	@ConfigItem(
 		keyName = "bankstandingExpOverlay",
 		name = "Show bankstanding experience overlay",
 		description = "Show the bankstanding experience panel whenever you gain experience",
 		section = skill,
-		position = 0
+		position = 1
 	)
 	default boolean showBankstandingExperienceOverlay()
 	{
@@ -41,7 +50,7 @@ public interface BankstandingConfig extends Config
 		name = "Overlay timeout",
 		description = "Show the experience panel for N seconds after the last exp drop.",
 		section = skill,
-		position = 1
+		position = 2
 	)
 	@Units(Units.SECONDS)
 	default int panelFadeTime()
@@ -56,7 +65,7 @@ public interface BankstandingConfig extends Config
 			"Experience will still be earned within 25 tiles.<br/><br/>" +
 			"note: 0 disables this feature.",
 		section = skill,
-		position = 2
+		position = 3
 	)
 	default BankDistance panelHideDistance()
 	{
@@ -68,7 +77,7 @@ public interface BankstandingConfig extends Config
 		name = "Exp notation",
 		description = "Describes how EXP should be shown in the overlay",
 		section = skill,
-		position = 3
+		position = 4
 	)
 	default ExperienceNotation experienceNotation() { return ExperienceNotation.AUTO; }
 
@@ -77,7 +86,7 @@ public interface BankstandingConfig extends Config
 		name = "Use virtual level",
 		description = "Keep counting level after reaching 99, caps at 126 (200M)",
 		section = skill,
-		position = 3
+		position = 5
 	)
 	default boolean showVirtualLevel() { return false; }
 
@@ -91,11 +100,20 @@ public interface BankstandingConfig extends Config
 	String stats = "stats";
 
 	@ConfigItem(
+		keyName = "enableTracker",
+		name = "Enable tracker",
+		description = "Track time spent at banks",
+		section = stats,
+		position = 0
+	)
+	default boolean enableTracker() { return true; }
+
+	@ConfigItem(
 		keyName = "bankStatsOverlay",
 		name = "Show bank stats overlay",
 		description = "Display a small info overlay with your bank stats whenever you're standing at a bank",
 		section = stats,
-		position = 0
+		position = 1
 	)
 	default boolean showBankStatsOverlay() {
 		return true;
@@ -106,7 +124,7 @@ public interface BankstandingConfig extends Config
 		name = "Only track when bank is closed",
 		description = "When enabled, time with the bank interface open is excluded (useful for separating actual bankstanding from banking)",
 		section = stats,
-		position = 1
+		position = 2
 	)
 	default boolean excludeBankOpen()
 	{

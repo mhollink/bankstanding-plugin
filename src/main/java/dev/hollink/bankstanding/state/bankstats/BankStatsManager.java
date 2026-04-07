@@ -55,6 +55,11 @@ public class BankStatsManager
 
 	public void onTick()
 	{
+		if (!config.enableTracker())
+		{
+			return;
+		}
+
 		if (config.excludeBankOpen() && bankIsOpen())
 		{
 			return;
@@ -165,6 +170,11 @@ public class BankStatsManager
 		sessionStats.clear();
 		saveData();
 		SwingUtilities.invokeLater(plugin.getBankStatsPanel()::refresh);
+	}
+
+	public Optional<BankLocation> getCachedLocation()
+	{
+		return Optional.ofNullable(currentLocation);
 	}
 
 	public Optional<BankLocation> getBankLocation()

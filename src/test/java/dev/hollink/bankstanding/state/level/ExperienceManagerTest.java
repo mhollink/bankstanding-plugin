@@ -1,5 +1,6 @@
 package dev.hollink.bankstanding.state.level;
 
+import dev.hollink.bankstanding.BankstandingConfig;
 import dev.hollink.bankstanding.config.ActivityState;
 import dev.hollink.bankstanding.config.BankDistance;
 import dev.hollink.bankstanding.domain.PlayerState;
@@ -34,6 +35,7 @@ public class ExperienceManagerTest
 	private Client mockClient;
 	private ConfigManager mockConfigManager;
 	private BankstandingEventBus mockEventBus;
+	private BankstandingConfig mockConfig;
 	private Player mockPlayer;
 
 	private ExperienceManager experienceManager;
@@ -44,13 +46,15 @@ public class ExperienceManagerTest
 		mockClient = mock(Client.class);
 		mockConfigManager = mock(ConfigManager.class);
 		mockEventBus = mock(BankstandingEventBus.class);
+		mockConfig = mock(BankstandingConfig.class);
+		when(mockConfig.enableLeveling()).thenReturn(true);
 
 		mockPlayer = mock(Player.class);
 		when(mockPlayer.getName()).thenReturn("TestPlayer");
 		when(mockPlayer.getWorldLocation()).thenReturn(GRAND_EXCHANGE.getCenterPoint());
 		when(mockClient.getLocalPlayer()).thenReturn(mockPlayer);
 
-		experienceManager = new ExperienceManager(mockClient, mockConfigManager, mockEventBus);
+		experienceManager = new ExperienceManager(mockClient, mockConfigManager, mockEventBus, mockConfig);
 	}
 
 	@After

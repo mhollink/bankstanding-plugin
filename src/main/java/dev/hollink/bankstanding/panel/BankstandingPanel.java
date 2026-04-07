@@ -23,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
@@ -35,6 +36,10 @@ public class BankstandingPanel extends PluginPanel
 	private static final Color COLOR_GOLD = new Color(200, 170, 100);
 	private static final Color BG_ROW_ODD = new Color(37, 37, 37);
 	private static final Color BG_ROW_EVEN = new Color(45, 45, 45);
+	private static final Border BORDER_ROW_DEFAULT = new EmptyBorder(3, 6, 3, 4);
+	private static final Border BORDER_ROW_ACTIVE = BorderFactory.createCompoundBorder(
+		BorderFactory.createLineBorder(COLOR_GOLD, 1),
+		new EmptyBorder(2, 5, 2, 3));
 
 	private final BankStatsManager bankStatsManager;
 
@@ -195,8 +200,6 @@ public class BankstandingPanel extends PluginPanel
 			? bankStatsManager.getSessionStats()
 			: bankStatsManager.getAllTimeStats();
 
-		BankLocation live = bankStatsManager.getBankLocation().orElse(null);
-
 		long totTicks = stats.values().stream().mapToLong(BankStats::getTotalTicks).sum();
 		long idleTicks = stats.values().stream().mapToLong(BankStats::getIdleTicks).sum();
 		long actTicks = stats.values().stream().mapToLong(BankStats::getActiveTicks).sum();
@@ -236,9 +239,11 @@ public class BankstandingPanel extends PluginPanel
 
 	private JPanel buildBankRow(BankLocation bank, BankStats stats, boolean odd)
 	{
+		boolean isLive = bankStatsManager.getCachedLocation().map(bank::equals).orElse(false);
+
 		JPanel row = new JPanel(new BorderLayout());
 		row.setBackground(odd ? BG_ROW_ODD : BG_ROW_EVEN);
-		row.setBorder(new EmptyBorder(3, 6, 3, 4));
+		row.setBorder(isLive ? BORDER_ROW_ACTIVE : BORDER_ROW_DEFAULT);
 
 		// Left: name + idle/active %
 		JPanel left = new JPanel();

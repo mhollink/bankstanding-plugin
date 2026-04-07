@@ -40,6 +40,8 @@ public class BankStatsManagerTest
 		mockPlayer = mock(Player.class);
 		when(mockClient.getLocalPlayer()).thenReturn(mockPlayer);
 
+		when(mockConfig.enableTracker()).thenReturn(true);
+
 		mockPanel = mock(BankstandingPanel.class);
 		when(mockPlugin.getBankStatsPanel()).thenReturn(mockPanel);
 

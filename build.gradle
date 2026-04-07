@@ -47,6 +47,14 @@ tasks.register('run', JavaExec) {
 	args "--developer-mode", "--debug"
 }
 
+tasks.register('runTest', JavaExec) {
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'dev.hollink.bankstanding.RunClient'
+
+	jvmArgs "-ea"
+	args "--developer-mode", "--debug"
+}
+
 tasks.register('shadowJar', Jar) {
 	dependsOn configurations.testRuntimeClasspath
 	manifest {
