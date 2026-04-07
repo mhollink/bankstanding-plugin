@@ -48,24 +48,10 @@ public class LevelCommandHandler implements CommandHandler
 
 	public void handleCommand(ChatMessage chatMessage, String message)
 	{
-		String[] args = message.split(" ");
-		log.debug("Received level command: {}", Arrays.toString(args));
-		if (args.length != 2)
-		{
-			return;
-		}
-
-		String category = args[1].toLowerCase();
-		switch (category)
-		{
-			case "bs":
-			case "bankstanding":
-				sendLevelResponse(
-					chatMessage,
-					"Bankstanding",
-					xpManager.getBankstanding().getCurrentLevel(),
-					(int) xpManager.getBankstanding().getExperience());
-				break;
-		}
+		sendLevelResponse(
+			chatMessage,
+			"Bankstanding",
+			xpManager.getBankstanding().getCurrentLevel(),
+			(int) xpManager.getBankstanding().getExperience());
 	}
 }

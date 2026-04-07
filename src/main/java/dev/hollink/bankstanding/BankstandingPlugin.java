@@ -91,11 +91,10 @@ public class BankstandingPlugin extends Plugin
 		overlayManager.init();
 		levelUpHandler.init();
 
-		chatCommandManager.registerCommand("!lvl", chatCommandHandler::handleLevelCommand);
+		chatCommandManager.registerCommand("!bankstanding", chatCommandHandler::handleLevelCommand);
 		if (developerMode) {
 			chatCommandManager.registerCommand("!setBankstanding", chatCommandHandler::handleSetLevelCommand);
 		}
-
 		clientToolbar.addNavigation(navButton = buildNavButton());
 	}
 
@@ -109,7 +108,7 @@ public class BankstandingPlugin extends Plugin
 		levelUpHandler.destroy();
 		progressOverlayStateManager.destroy();
 
-		chatCommandManager.unregisterCommand("!lvl");
+		chatCommandManager.unregisterCommand("!bankstanding");
 		if (developerMode) {
 			chatCommandManager.unregisterCommand("!setBankstanding");
 		}

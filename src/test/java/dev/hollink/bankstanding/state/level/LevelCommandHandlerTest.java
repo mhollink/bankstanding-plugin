@@ -49,7 +49,7 @@ public class LevelCommandHandlerTest
 		BankstandingLevel level = new BankstandingLevel(10);
 		when(mockXpManager.getBankstanding()).thenReturn(level);
 
-		commandHandler.handleCommand(mockChatMessage, "!level bankstanding");
+		commandHandler.handleCommand(mockChatMessage, "!bankstanding");
 
 		verify(mockMessageNode).setRuneLiteFormatMessage(
 			contains("Bankstanding")
@@ -58,39 +58,4 @@ public class LevelCommandHandlerTest
 		verify(mockClient).refreshChat();
 	}
 
-	@Test
-	public void handleCommand_shouldSendLevelResponse_forBsShortcut()
-	{
-		BankstandingLevel level = new BankstandingLevel(15);
-		when(mockXpManager.getBankstanding()).thenReturn(level);
-
-		commandHandler.handleCommand(mockChatMessage, "!level bs");
-
-		verify(mockMessageNode).setRuneLiteFormatMessage(
-			contains("Bankstanding")
-		);
-		verify(mockClient).refreshChat();
-	}
-
-	@Test
-	public void handleCommand_shouldNotSendMessage_forUnknownCategory()
-	{
-		BankstandingLevel level = new BankstandingLevel(10);
-		when(mockXpManager.getBankstanding()).thenReturn(level);
-
-		commandHandler.handleCommand(mockChatMessage, "!level unknown");
-
-		verify(mockMessageNode, never()).setRuneLiteFormatMessage(any());
-		verify(mockClient, never()).refreshChat();
-	}
-
-	@Test
-	public void handleCommand_shouldIgnoreIncorrectArguments()
-	{
-		commandHandler.handleCommand(mockChatMessage, "!level");
-		commandHandler.handleCommand(mockChatMessage, "!level a b c");
-
-		verify(mockMessageNode, never()).setRuneLiteFormatMessage(any());
-		verify(mockClient, never()).refreshChat();
-	}
 }
