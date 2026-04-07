@@ -1,5 +1,6 @@
 package dev.hollink.bankstanding.state.level;
 
+import dev.hollink.bankstanding.BankstandingConfig;
 import dev.hollink.bankstanding.domain.BankstandingLevel;
 import dev.hollink.bankstanding.events.BankstandingEvent;
 import dev.hollink.bankstanding.events.BankstandingEventBus;
@@ -22,8 +23,10 @@ public class LevelUpHandler
 	private final Client client;
 	private final BankstandingEventBus events;
 	private final ConfettiOverlay confetti;
+	private final BankstandingConfig config;
 
-	public void init() {
+	public void init()
+	{
 		events.register(this::onEvent);
 	}
 
@@ -34,9 +37,11 @@ public class LevelUpHandler
 
 	private void onEvent(BankstandingEvent event)
 	{
-		if (event instanceof BankstandingExperienceGainedEvent) {
+		if (event instanceof BankstandingExperienceGainedEvent)
+		{
 			BankstandingExperienceGainedEvent xpEvent = (BankstandingExperienceGainedEvent) event;
-			if (xpEvent.isLeveledUp()) {
+			if (xpEvent.isLeveledUp())
+			{
 				levelUp(xpEvent);
 			}
 		}
@@ -44,10 +49,19 @@ public class LevelUpHandler
 
 	private void levelUp(BankstandingExperienceGainedEvent xpEvent)
 	{
-		playLevelUpSound();
-		confetti.trigger(Duration.ofSeconds(5));
-		sendLevelUpMessage(xpEvent.getSkill());
 		log.debug("Bankstanding has been level up to {}", xpEvent.getSkill().getCurrentLevel());
+		if (config.playLevelUpSfx())
+		{
+			playLevelUpSound();
+		}
+		if (config.showLevelUpConfetti())
+		{
+			confetti.trigger(Duration.ofSeconds(5));
+		}
+		if (config.showLevelUpMessage())
+		{
+			sendLevelUpMessage(xpEvent.getSkill());
+		}
 	}
 
 	private void sendLevelUpMessage(BankstandingLevel skill)

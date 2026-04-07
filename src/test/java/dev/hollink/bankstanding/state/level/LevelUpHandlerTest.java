@@ -1,5 +1,6 @@
 package dev.hollink.bankstanding.state.level;
 
+import dev.hollink.bankstanding.BankstandingConfig;
 import dev.hollink.bankstanding.domain.BankstandingLevel;
 import dev.hollink.bankstanding.events.BankstandingEvent;
 import dev.hollink.bankstanding.events.BankstandingEventBus;
@@ -10,6 +11,7 @@ import java.util.function.Consumer;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.SoundEffectID;
+import net.runelite.client.plugins.bank.BankConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -28,6 +30,7 @@ public class LevelUpHandlerTest
 	private Client mockClient;
 	private BankstandingEventBus mockEventBus;
 	private ConfettiOverlay mockConfetti;
+	private BankstandingConfig mockConfig;
 
 	private LevelUpHandler levelUpHandler;
 
@@ -37,8 +40,9 @@ public class LevelUpHandlerTest
 		mockClient = mock(Client.class);
 		mockEventBus = mock(BankstandingEventBus.class);
 		mockConfetti = mock(ConfettiOverlay.class);
+		mockConfig = mock(BankstandingConfig.class);
 
-		levelUpHandler = new LevelUpHandler(mockClient, mockEventBus, mockConfetti);
+		levelUpHandler = new LevelUpHandler(mockClient, mockEventBus, mockConfetti, mockConfig);
 	}
 
 	@Test
@@ -60,6 +64,10 @@ public class LevelUpHandlerTest
 	@Test
 	public void event_shouldTriggerLevelUpBehavior_whenLeveledUp()
 	{
+		when(mockConfig.showLevelUpConfetti()).thenReturn(true);
+		when(mockConfig.showLevelUpMessage()).thenReturn(true);
+		when(mockConfig.playLevelUpSfx()).thenReturn(true);
+
 		levelUpHandler.init();
 
 		Consumer<BankstandingEvent> listener = getRegisteredListener();

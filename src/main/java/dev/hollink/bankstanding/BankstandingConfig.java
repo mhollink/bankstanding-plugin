@@ -19,8 +19,7 @@ public interface BankstandingConfig extends Config
 	@ConfigSection(
 		name = "Bankstanding skill",
 		description = "Bankstanding experience overlay configuration",
-		position = 0,
-		closedByDefault = false
+		position = 0
 	)
 	String skill = "skill";
 
@@ -31,11 +30,14 @@ public interface BankstandingConfig extends Config
 		section = skill,
 		position = 0
 	)
-	default boolean enableLeveling() { return true; }
+	default boolean enableLeveling()
+	{
+		return true;
+	}
 
 	@ConfigItem(
 		keyName = "bankstandingExpOverlay",
-		name = "Show bankstanding experience overlay",
+		name = "Show overlay",
 		description = "Show the bankstanding experience panel whenever you gain experience",
 		section = skill,
 		position = 1
@@ -60,10 +62,9 @@ public interface BankstandingConfig extends Config
 
 	@ConfigItem(
 		keyName = "overlayDistance",
-		name = "Overlay max bank distance",
+		name = "Overlay distance",
 		description = "Hide the overlay when moving outside a bank regardless of exp drops.<br/>" +
-			"Experience will still be earned within 25 tiles.<br/><br/>" +
-			"note: 0 disables this feature.",
+			"Experience will still be earned within 25 tiles.",
 		section = skill,
 		position = 3
 	)
@@ -73,29 +74,67 @@ public interface BankstandingConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "levelUpConfetti",
+		name = "Show level up confetti",
+		description = "Show the confetti particles when you level up in Bankstanding.",
+		section = skill,
+		position = 4
+	)
+	default boolean showLevelUpConfetti() {
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "levelUpMessage",
+		name = "Show level up message",
+		description = "Add a chat message when you level up in Bankstanding.",
+		section = skill,
+		position = 5
+	)
+	default boolean showLevelUpMessage() {
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "levelUpSfx",
+		name = "Play level up sound effect",
+		description = "Play a sound effect when you level up in Bankstanding.",
+		section = skill,
+		position = 6
+	)
+	default boolean playLevelUpSfx() {
+		return true;
+	}
+
+
+	@ConfigItem(
 		keyName = "experienceNotation",
 		name = "Exp notation",
 		description = "Describes how EXP should be shown in the overlay",
 		section = skill,
-		position = 4
+		position = 7
 	)
-	default ExperienceNotation experienceNotation() { return ExperienceNotation.AUTO; }
+	default ExperienceNotation experienceNotation()
+	{
+		return ExperienceNotation.AUTO;
+	}
 
 	@ConfigItem(
 		keyName = "virtualLeveling",
 		name = "Use virtual level",
 		description = "Keep counting level after reaching 99, caps at 126 (200M)",
 		section = skill,
-		position = 5
+		position = 8
 	)
-	default boolean showVirtualLevel() { return false; }
-
+	default boolean showVirtualLevel()
+	{
+		return false;
+	}
 
 	@ConfigSection(
 		name = "Bank stats",
 		description = "Bank stats",
-		position = 1,
-		closedByDefault = false
+		position = 1
 	)
 	String stats = "stats";
 
@@ -106,7 +145,10 @@ public interface BankstandingConfig extends Config
 		section = stats,
 		position = 0
 	)
-	default boolean enableTracker() { return true; }
+	default boolean enableTracker()
+	{
+		return true;
+	}
 
 	@ConfigItem(
 		keyName = "bankStatsOverlay",
@@ -115,9 +157,12 @@ public interface BankstandingConfig extends Config
 		section = stats,
 		position = 1
 	)
-	default boolean showBankStatsOverlay() {
+	default boolean showBankStatsOverlay()
+	{
 		return true;
-	};
+	}
+
+	;
 
 	@ConfigItem(
 		keyName = "countBankOpen",
