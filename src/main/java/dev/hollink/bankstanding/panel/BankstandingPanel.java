@@ -23,12 +23,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import lombok.extern.slf4j.Slf4j;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
+@Slf4j
 public class BankstandingPanel extends PluginPanel
 {
 	private static final Color COLOR_IDLE = new Color(210, 75, 75);
@@ -42,6 +46,7 @@ public class BankstandingPanel extends PluginPanel
 		new EmptyBorder(2, 5, 2, 3));
 
 	private final BankStatsManager bankStatsManager;
+	private final ClientThread clientThread;
 
 	private final JLabel totalLabel = new JLabel();
 	private final JLabel idleLabel = new JLabel();
@@ -51,10 +56,11 @@ public class BankstandingPanel extends PluginPanel
 	private boolean showSession = true;
 
 	@Inject
-	public BankstandingPanel(BankStatsManager bankStatsManager)
+	public BankstandingPanel(BankStatsManager bankStatsManager, ClientThread clientThread)
 	{
 		super(false);
 		this.bankStatsManager = bankStatsManager;
+		this.clientThread = clientThread;
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
 		setBorder(new EmptyBorder(6, 6, 6, 6));
@@ -155,7 +161,7 @@ public class BankstandingPanel extends PluginPanel
 
 	private void confirmReset()
 	{
-		String label   = showSession ? "Reset Session" : "Reset All Time";
+		String label = showSession ? "Reset Session" : "Reset All Time";
 		String message = showSession ? "Clear session stats?" : "Clear all-time stats? This cannot be undone.";
 
 		int choice = JOptionPane.showOptionDialog(
@@ -165,8 +171,14 @@ public class BankstandingPanel extends PluginPanel
 
 		if (choice == 0)
 		{
-			if (showSession) bankStatsManager.resetSession();
-			else             bankStatsManager.resetAllTime();
+			if (showSession)
+			{
+				bankStatsManager.resetSession();
+			}
+			else
+			{
+				bankStatsManager.resetAllTime();
+			}
 		}
 	}
 
@@ -196,10 +208,17 @@ public class BankstandingPanel extends PluginPanel
 
 	public void refresh()
 	{
-		Map<BankLocation, BankStats> stats = showSession
-			? bankStatsManager.getSessionStats()
-			: bankStatsManager.getAllTimeStats();
+		clientThread.invoke(() -> {
+			BankLocation currentBank = bankStatsManager.getBankLocation().orElse(null);
+			Map<BankLocation, BankStats> stats = showSession
+				? bankStatsManager.getSessionStats()
+				: bankStatsManager.getAllTimeStats();
 
+			SwingUtilities.invokeLater(() -> repaintPanel(stats, currentBank));
+		});
+	}
+
+	private void repaintPanel(Map<BankLocation, BankStats> stats, BankLocation currentBank) {
 		long totTicks = stats.values().stream().mapToLong(BankStats::getTotalTicks).sum();
 		long idleTicks = stats.values().stream().mapToLong(BankStats::getIdleTicks).sum();
 		long actTicks = stats.values().stream().mapToLong(BankStats::getActiveTicks).sum();
@@ -213,6 +232,7 @@ public class BankstandingPanel extends PluginPanel
 		listPanel.removeAll();
 
 		List<Map.Entry<BankLocation, BankStats>> sorted = stats.entrySet().stream()
+			.filter(entry -> entry.getKey() != null)
 			.sorted(Comparator.comparingLong((Map.Entry<BankLocation, BankStats> e) -> e.getValue().getTotalTicks()).reversed())
 			.collect(Collectors.toList());
 
@@ -225,22 +245,20 @@ public class BankstandingPanel extends PluginPanel
 			listPanel.add(empty);
 		}
 
-		boolean odd = true;
-		for (Map.Entry<BankLocation, BankStats> entry : sorted)
+		for (int i = 0; i < sorted.size(); i++)
 		{
-			listPanel.add(buildBankRow(entry.getKey(), entry.getValue(), odd));
-			odd = !odd;
+			var entry = sorted.get(i);
+			var odd = i % 2 == 0;
+			var row = buildBankRow(entry.getKey(), entry.getValue(), odd, entry.getKey().equals(currentBank));
+			listPanel.add(row);
 		}
 
 		listPanel.revalidate();
 		listPanel.repaint();
 	}
 
-
-	private JPanel buildBankRow(BankLocation bank, BankStats stats, boolean odd)
+	private JPanel buildBankRow(BankLocation bank, BankStats stats, boolean odd, boolean isLive)
 	{
-		boolean isLive = bankStatsManager.getCachedLocation().map(bank::equals).orElse(false);
-
 		JPanel row = new JPanel(new BorderLayout());
 		row.setBackground(odd ? BG_ROW_ODD : BG_ROW_EVEN);
 		row.setBorder(isLive ? BORDER_ROW_ACTIVE : BORDER_ROW_DEFAULT);

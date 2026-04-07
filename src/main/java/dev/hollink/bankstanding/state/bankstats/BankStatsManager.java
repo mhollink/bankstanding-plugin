@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +64,8 @@ public class BankStatsManager
 			return;
 		}
 
-		getBankLocation().ifPresentOrElse(this::addTickToBankLocation, () -> currentLocation = null);
+		getBankLocation()
+			.ifPresentOrElse(this::addTickToBankLocation, this::resetCurrentBank);
 	}
 
 	private boolean bankIsOpen()
@@ -102,7 +102,7 @@ public class BankStatsManager
 
 		if (++ticksSinceLastPanelRefresh >= 2)
 		{
-			SwingUtilities.invokeLater(plugin.getBankStatsPanel()::refresh);
+			plugin.getBankStatsPanel().refresh();
 			ticksSinceLastPanelRefresh = 0;
 		}
 	}
@@ -161,7 +161,7 @@ public class BankStatsManager
 	public void resetSession()
 	{
 		sessionStats.clear();
-		SwingUtilities.invokeLater(plugin.getBankStatsPanel()::refresh);
+		plugin.getBankStatsPanel().refresh();
 	}
 
 	public void resetAllTime()
@@ -169,12 +169,7 @@ public class BankStatsManager
 		allTimeStats.clear();
 		sessionStats.clear();
 		saveData();
-		SwingUtilities.invokeLater(plugin.getBankStatsPanel()::refresh);
-	}
-
-	public Optional<BankLocation> getCachedLocation()
-	{
-		return Optional.ofNullable(currentLocation);
+		plugin.getBankStatsPanel().refresh();
 	}
 
 	public Optional<BankLocation> getBankLocation()
@@ -182,5 +177,14 @@ public class BankStatsManager
 		WorldPoint player = client.getLocalPlayer().getWorldLocation();
 		return BankDistanceFinder.getCLosestBank(player)
 			.filter(bank -> bank.contains(player));
+	}
+
+	private void resetCurrentBank()
+	{
+		if (currentLocation != null)
+		{
+			currentLocation = null;
+			plugin.getBankStatsPanel().refresh();
+		}
 	}
 }
