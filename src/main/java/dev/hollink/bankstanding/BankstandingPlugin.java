@@ -91,9 +91,9 @@ public class BankstandingPlugin extends Plugin
 		overlayManager.init();
 		levelUpHandler.init();
 
-		chatCommandManager.registerCommand("!bankstanding", chatCommandHandler::handleLevelCommand);
+		chatCommandManager.registerCommandAsync("!bankstanding", chatCommandHandler::lookupLevel, chatCommandHandler::submitLevel);
 		if (developerMode) {
-			chatCommandManager.registerCommand("!setBankstanding", chatCommandHandler::handleSetLevelCommand);
+			chatCommandManager.registerCommand("!setBankstanding", chatCommandHandler::setLevel);
 		}
 		clientToolbar.addNavigation(navButton = buildNavButton());
 	}
