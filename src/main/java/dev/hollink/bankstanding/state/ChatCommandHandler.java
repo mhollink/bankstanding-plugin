@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.events.ChatMessage;
+import net.runelite.client.events.ChatInput;
 
 
 @Slf4j
@@ -17,12 +18,17 @@ public class ChatCommandHandler
 	private final LevelCommandHandler levelCommandHandler;
 	private final LevelSetCommandHandler setLevelCommandHandler;
 
-	public void handleLevelCommand(ChatMessage chatMessage, String message)
+	public void lookupLevel(ChatMessage chatMessage, String message)
 	{
 		levelCommandHandler.handleCommand(chatMessage, message);
 	}
 
-	public void handleSetLevelCommand(ChatMessage chatMessage, String message) {
+	public boolean submitLevel(ChatInput chatInput, String s)
+	{
+		return levelCommandHandler.submitLevel(chatInput, s);
+	}
+
+	public void setLevel(ChatMessage chatMessage, String message) {
 		try {
 			setLevelCommandHandler.handleCommand(chatMessage, message);
 		}
